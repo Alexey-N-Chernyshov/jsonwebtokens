@@ -6,12 +6,15 @@ use crate::crypto::algorithm::{Algorithm, AlgorithmID};
 use crate::error::{Error, ErrorDetails};
 use crate::TokenData;
 
+use base64::{engine::URL_SAFE_NO_PAD, Engine};
+
 pub(crate) fn b64_encode(input: &[u8]) -> String {
-    base64::encode_config(input, base64::URL_SAFE_NO_PAD)
+    URL_SAFE_NO_PAD.encode(input)
 }
 
 pub(crate) fn b64_decode(input: &str) -> Result<Vec<u8>, Error> {
-    base64::decode_config(input, base64::URL_SAFE_NO_PAD)
+    URL_SAFE_NO_PAD
+        .decode(input)
         .map_err(|e| Error::InvalidInput(ErrorDetails::map("base64 decode failure", Box::new(e))))
 }
 
